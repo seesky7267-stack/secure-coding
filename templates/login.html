@@ -53,17 +53,25 @@
             text-align: center;
             text-decoration: none;
             font-size: 15px;
-            cursor: pointer;
         }
 
         button {
             background-color: #222222;
             color: white;
+            cursor: pointer;
         }
 
         .register-link {
             background-color: #e5e7eb;
             color: #222222;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -71,6 +79,12 @@
 <body>
     <div class="login-container">
         <h1>중고거래 플랫폼</h1>
+
+        {% if message %}
+        <div class="message">
+            {{ message }}
+        </div>
+        {% endif %}
 
         <form method="POST" action="/login">
             <label for="username">아이디</label>

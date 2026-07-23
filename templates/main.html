@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중고거래 플랫폼</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border: 1px solid #dddddd;
+            border-radius: 10px;
+        }
+
+        .top-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .logout-button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #222222;
+            color: white;
+            cursor: pointer;
+        }
+
+        .welcome {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9fafb;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="top-menu">
+            <h1>중고거래 플랫폼</h1>
+
+            <form method="POST" action="/logout">
+                <button class="logout-button" type="submit">
+                    로그아웃
+                </button>
+            </form>
+        </div>
+
+        <div class="welcome">
+            <p><strong>{{ username }}</strong>님, 로그인되었습니다.</p>
+            <p>현재 잔액: {{ "{:,}".format(balance) }}원</p>
+        </div>
+    </div>
+</body>
+</html>
