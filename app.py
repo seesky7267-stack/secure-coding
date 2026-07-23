@@ -296,27 +296,95 @@ def search():
     )
 
 @app.route("/products/<int:product_id>")
+@app.route("/products/<int:product_id>")
 def product_detail(product_id):
     user_id = session.get("user_id")
 
     if user_id is None:
         return redirect(url_for("index"))
 
+    user = db.session.get(User, user_id)
     product = db.session.get(Product, product_id)
+
+    if user is None:
+        session.clear()
+        return redirect(url_for("index"))
 
     if product is None:
         return "존재하지 않는 상품입니다.", 404
 
     back_url = request.referrer or url_for("main")
+    message = request.args.get("message")
 
     return render_template(
         "product_detail.html",
         product=product,
-        back_url=back_url
+        user=user,
+        back_url=back_url,
+        message=message
     )
 
+@app.route("/products/<int:product_id>/purchase", methods=["POST"])
+def purchase_product(product_id):
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        return redirect(url_for("index"))
+
+    user = db.session.get(User, user_id)
+    product = db.session.get(Product, product_id)
+
+    if user is None:
+        session.clear()
+        return redirect(url_for("index"))
+
+    if product is None:
+        return "존재하지 않는 상품입니다.", 404
+
+    if product.is_sold:
+        return redirect(
+            url_for(
+                "product_detail",
+                product_id=product.id,
+                message="이미 판매 완료된 상품입니다."
+            )
+        )
+
+    if product.seller_id == user.id:
+        return redirect(
+            url_for(
+                "product_detail",
+                product_id=product.id,
+                message="자신이 등록한 상품은 구매할 수 없습니다."
+            )
+        )
+
+    if user.balance < product.price:
+        return redirect(
+            url_for(
+                "product_detail",
+                product_id=product.id,
+                message="잔액이 부족합니다."
+            )
+        )
+
+    seller = db.session.get(User, product.seller_id)
+    if seller is None:
+        return "판매자 정보를 찾을 수 없습니다.", 404
+    user.balance -= product.price
+    seller.balance += product.price
+    product.is_sold = True
+
+    db.session.commit()
+
+    return redirect(
+        url_for(
+            "product_detail",
+            product_id=product.id
+        )
+    )
+    
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-
     app.run(debug=True)
