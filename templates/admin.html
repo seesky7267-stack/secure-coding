@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+        }
+
+        .container {
+            width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 40px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        button,
+        a {
+            padding: 7px 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>관리자 페이지</h1>
+
+    <p><a href="/main">메인 화면으로</a></p>
+
+    <h2>사용자 관리</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>아이디</th>
+            <th>잔액</th>
+            <th>상태</th>
+            <th>관리</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ "{:,}".format(user.balance) }}원</td>
+            <td>
+                {% if user.id in blocked_user_ids %}
+                    차단
+                {% else %}
+                    정상
+                {% endif %}
+            </td>
+            <td>
+                {% if user.username != "admin" %}
+                <form
+                    method="POST"
+                    action="/admin/users/{{ user.id }}/toggle-block"
+                >
+                    <button type="submit">
+                        {% if user.id in blocked_user_ids %}
+                            차단 해제
+                        {% else %}
+                            사용자 차단
+                        {% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>상품 관리</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>상태</th>
+            <th>관리</th>
+        </tr>
+
+        {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ "{:,}".format(product.price) }}원</td>
+            <td>
+                {% if product.id in blocked_product_ids %}
+                    차단
+                {% elif product.is_sold %}
+                    판매 완료
+                {% else %}
+                    판매 중
+                {% endif %}
+            </td>
+            <td>
+                <form
+                    method="POST"
+                    action="/admin/products/{{ product.id }}/toggle-block"
+                >
+                    <button type="submit">
+                        {% if product.id in blocked_product_ids %}
+                            차단 해제
+                        {% else %}
+                            상품 차단
+                        {% endif %}
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>댓글 관리</h2>
+    <table>
+        <tr>
+            <th>작성자</th>
+            <th>상품</th>
+            <th>내용</th>
+            <th>관리</th>
+        </tr>
+
+        {% for comment, writer, product in comments %}
+        <tr>
+            <td>{{ writer.username }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ comment.content }}</td>
+            <td>
+                <form
+                    method="POST"
+                    action="/admin/comments/{{ comment.id }}/delete"
+                >
+                    <button type="submit">댓글 삭제</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

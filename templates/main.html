@@ -103,6 +103,12 @@
             <h1>중고거래 플랫폼</h1>
 
             <div class="menu-buttons">
+                {% if is_admin %}
+                <a class="register-button" href="/admin">
+                    관리자 페이지
+                </a>
+                {% endif %}
+
                 <a class="register-button" href="/products/register">
                     상품 등록하기
                 </a>
