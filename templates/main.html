@@ -27,23 +27,49 @@
             align-items: center;
         }
 
+        .menu-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
         h1 {
             margin: 0;
         }
 
-        .logout-button {
+        button,
+        .register-button {
             padding: 10px 16px;
             border: none;
             border-radius: 5px;
             background-color: #222222;
             color: white;
             cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
         }
 
         .welcome {
             margin-top: 30px;
             padding: 20px;
             background-color: #f9fafb;
+            border-radius: 5px;
+        }
+
+        .product-list {
+            margin-top: 30px;
+        }
+
+        .product-item {
+            display: flex;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .product-item img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
             border-radius: 5px;
         }
     </style>
@@ -54,16 +80,42 @@
         <div class="top-menu">
             <h1>중고거래 플랫폼</h1>
 
-            <form method="POST" action="/logout">
-                <button class="logout-button" type="submit">
-                    로그아웃
-                </button>
-            </form>
+            <div class="menu-buttons">
+                <a class="register-button" href="/products/register">
+                    상품 등록하기
+                </a>
+
+                <form method="POST" action="/logout">
+                    <button type="submit">로그아웃</button>
+                </form>
+            </div>
         </div>
 
         <div class="welcome">
             <p><strong>{{ username }}</strong>님, 로그인되었습니다.</p>
             <p>현재 잔액: {{ "{:,}".format(balance) }}원</p>
+        </div>
+
+        <div class="product-list">
+            <h2>등록된 상품</h2>
+
+            {% if products %}
+                {% for product in products %}
+                <div class="product-item">
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+                        alt="{{ product.name }}"
+                    >
+
+                    <div>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ "{:,}".format(product.price) }}원</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>등록된 상품이 없습니다.</p>
+            {% endif %}
         </div>
     </div>
 </body>
