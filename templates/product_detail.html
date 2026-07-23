@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border: 1px solid #dddddd;
+            border-radius: 10px;
+        }
+
+        .product-image {
+            display: block;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto 25px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            text-align: center;
+        }
+
+        .product-info h1 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .button-area {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 11px 18px;
+            background-color: #222222;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img
+            class="product-image"
+            src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+            alt="{{ product.name }}"
+        >
+
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+
+            <p class="price">
+                {{ "{:,}".format(product.price) }}원
+            </p>
+
+            {% if product.is_sold %}
+                <p class="status">판매 완료</p>
+            {% else %}
+                <p class="status">판매 중</p>
+            {% endif %}
+        </div>
+
+        <div class="button-area">
+            <a class="back-button" href="{{ back_url }}">
+                뒤로가기
+            </a>
+        </div>
+    </div>
+</body>
+</html>

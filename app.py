@@ -293,7 +293,27 @@ def search():
         "search.html",
         keyword=keyword,
         products=products
-    )   
+    )
+
+@app.route("/products/<int:product_id>")
+def product_detail(product_id):
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        return redirect(url_for("index"))
+
+    product = db.session.get(Product, product_id)
+
+    if product is None:
+        return "존재하지 않는 상품입니다.", 404
+
+    back_url = request.referrer or url_for("main")
+
+    return render_template(
+        "product_detail.html",
+        product=product,
+        back_url=back_url
+    )
 
 if __name__ == "__main__":
     with app.app_context():
