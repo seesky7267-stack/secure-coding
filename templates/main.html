@@ -55,6 +55,19 @@
             border-radius: 5px;
         }
 
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 11px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+
         .product-list {
             margin-top: 30px;
         }
@@ -71,6 +84,15 @@
             height: 140px;
             object-fit: cover;
             border-radius: 5px;
+        }
+
+        .product-name {
+            color: #111111;
+            text-decoration: none;
+        }
+
+        .product-name:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -96,20 +118,44 @@
             <p>현재 잔액: {{ "{:,}".format(balance) }}원</p>
         </div>
 
+        <form class="search-form" method="GET" action="/search">
+            <input
+                type="text"
+                name="keyword"
+                placeholder="상품명을 검색하세요"
+                required
+            >
+
+            <button type="submit">검색</button>
+        </form>
+
         <div class="product-list">
             <h2>등록된 상품</h2>
 
             {% if products %}
                 {% for product in products %}
                 <div class="product-item">
-                    <img
-                        src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
-                        alt="{{ product.name }}"
-                    >
+                    <a href="/products/{{ product.id }}">
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+                            alt="{{ product.name }}"
+                        >
+                    </a>
 
                     <div>
-                        <h3>{{ product.name }}</h3>
+                        <h3>
+                            <a class="product-name" href="/products/{{ product.id }}">
+                                {{ product.name }}
+                            </a>
+                        </h3>
+
                         <p>{{ "{:,}".format(product.price) }}원</p>
+
+                        {% if product.is_sold %}
+                            <p>판매 완료</p>
+                        {% else %}
+                            <p>판매 중</p>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}

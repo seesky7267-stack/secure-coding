@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 검색</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border: 1px solid #dddddd;
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 11px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+
+        .search-form button,
+        .main-link {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #222222;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .product-item {
+            display: flex;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .product-item img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-name {
+            color: #111111;
+            text-decoration: none;
+        }
+
+        .product-name:hover {
+            text-decoration: underline;
+        }
+
+        .bottom-menu {
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>상품 검색</h1>
+
+        <form class="search-form" method="GET" action="/search">
+            <input
+                type="text"
+                name="keyword"
+                value="{{ keyword }}"
+                placeholder="상품명을 입력하세요"
+                required
+            >
+
+            <button type="submit">검색</button>
+        </form>
+
+        <h2>검색 결과</h2>
+
+        {% if products %}
+            {% for product in products %}
+            <div class="product-item">
+                <a href="/products/{{ product.id }}">
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+                        alt="{{ product.name }}"
+                    >
+                </a>
+
+                <div>
+                    <h3>
+                        <a class="product-name" href="/products/{{ product.id }}">
+                            {{ product.name }}
+                        </a>
+                    </h3>
+
+                    <p>{{ "{:,}".format(product.price) }}원</p>
+
+                    {% if product.is_sold %}
+                        <p>판매 완료</p>
+                    {% else %}
+                        <p>판매 중</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>검색 결과가 없습니다.</p>
+        {% endif %}
+
+        <div class="bottom-menu">
+            <a class="main-link" href="/main">
+                메인 화면으로
+            </a>
+        </div>
+    </div>
+</body>
+</html>

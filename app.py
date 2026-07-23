@@ -270,6 +270,30 @@ def product_register():
 
     return redirect(url_for("main"))
 
+@app.route("/search")
+def search():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        return redirect(url_for("index"))
+
+    keyword = request.args.get("keyword", "").strip()
+
+    if not keyword:
+        products = []
+    else:
+        products = (
+            Product.query
+            .filter(Product.name.contains(keyword))
+            .order_by(Product.id.desc())
+            .all()
+        )
+
+    return render_template(
+        "search.html",
+        keyword=keyword,
+        products=products
+    )   
 
 if __name__ == "__main__":
     with app.app_context():
